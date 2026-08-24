@@ -1,0 +1,49 @@
+# Credenciais e configurações locais
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*credentials*.json
+*service-account*.json
+*service_account*.json
+
+# Python e testes
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+**/.pytest_cache/
+pytest-cache-files-*/
+**/pytest-cache-files-*/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+Thumbs.db
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+
+# Pacotes e cópias geradas
+*.zip
+grid-upload/
+github-ready/
+
+# Documentos brutos usados apenas como contexto local
+/# *.txt
+/Fluxograma/
+/UNICO_miro.py

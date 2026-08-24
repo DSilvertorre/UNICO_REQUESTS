@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>UNICO Search Portal</title>
+    <meta
+      name="description"
+      content="Portal interno para consulta de candidatos na UNICO e nas bases operacionais."
+    >
+    <link rel="stylesheet" href="./styles.css?v=20260731-logica-final">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#/home" aria-label="UNICO Search Portal - Home">
+        <span class="brand-symbol" aria-hidden="true">
+          <i data-lucide="user-round-search"></i>
+        </span>
+        <span>
+          <strong>UNICO</strong>
+          <small>SEARCH PORTAL</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menu-button" type="button" aria-label="Abrir menu">
+        <i data-lucide="menu"></i>
+      </button>
+
+      <nav class="top-nav" id="top-nav" aria-label="Navegação principal">
+        <a href="#/home" data-route-link="home">Home</a>
+        <span aria-hidden="true"></span>
+        <a href="#/documentacao" data-route-link="documentacao">Documentação</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="page home-page" data-route="home">
+        <div class="home-hero">
+          <p>Portal interno de busca</p>
+          <h1>Busque seus candidatos<br>na UNICO e Planilhas</h1>
+        </div>
+
+        <div class="home-content">
+          <div class="section-heading centered">
+            <p>Bases de busca</p>
+            <h2>Escolha onde deseja consultar</h2>
+          </div>
+
+          <div class="base-grid">
+            <article class="base-card">
+              <span class="base-icon"><i data-lucide="rocket"></i></span>
+              <h3>GO Live & Takeover</h3>
+              <p>Operações de implantação e takeover.</p>
+              <a href="#/base/go-live-takeover">Acessar base</a>
+            </article>
+
+            <article class="base-card">
+              <span class="base-icon"><i data-lucide="users-round"></i></span>
+              <h3>Processos Seletivos SP</h3>
+              <p>Processos seletivos presenciais em São Paulo.</p>
+              <a href="#/base/processos-seletivos-sp">Acessar base</a>
+            </article>
+
+            <article class="base-card">
+              <span class="base-icon"><i data-lucide="map-pinned"></i></span>
+              <h3>Periféricos</h3>
+              <p>Consultas das unidades periféricas.</p>
+              <a href="#/base/perifericos">Acessar base</a>
+            </article>
+
+            <article class="base-card">
+              <span class="base-icon"><i data-lucide="clipboard-list"></i></span>
+              <h3>Processo Online</h3>
+              <p>Registros dos processos realizados on-line.</p>
+              <a href="#/base/processo-online">Acessar base</a>
+            </article>
+
+            <article class="base-card">
+              <span class="base-icon"><i data-lucide="user-round-check"></i></span>
+              <h3>Consolidado</h3>
+              <p>Visão consolidada das bases operacionais.</p>
+              <a href="#/base/consolidado">Acessar base</a>
+            </article>
+
+            <article class="base-card featured">
+              <span class="available-badge">Disponível</span>
+              <span class="base-icon"><i data-lucide="chart-no-axes-combined"></i></span>
+              <h3>UNICO People</h3>
+              <p>Status, pendências e ocorrências de admissões.</p>
+              <a href="#/unico">Acessar base</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="page docs-page" data-route="documentacao" hidden>
+        <div class="docs-hero">
+          <p>Ajuda operacional</p>
+          <h1>Documentação</h1>
+          <span>Um guia direto para consultar candidatos no portal.</span>
+        </div>
+
+        <div class="docs-grid">
+          <article>
+            <span class="doc-step">01</span>
+                  <i data-lucide="clipboard-list"></i>
+            <h2>Informe os candidatos</h2>
+            <p>Cole até 2.000 CPFs, nomes ou e-mails. Use um valor por linha para facilitar a conferência.</p>
+          </article>
+          <article>
+            <span class="doc-step">02</span>
+            <i data-lucide="key-round"></i>
+            <h2>Adicione a credencial</h2>
+            <p>Cole o token atual da sessão UNICO. Ele é usado somente durante a consulta e não é salvo no navegador.</p>
+          </article>
+          <article>
+            <span class="doc-step">03</span>
+            <i data-lucide="calendar-range"></i>
+            <h2>Escolha o período</h2>
+            <p>Defina no controle o período entre os últimos 5 e 365 dias.</p>
+          </article>
+          <article>
+            <span class="doc-step">04</span>
+            <i data-lucide="table-2"></i>
+            <h2>Trabalhe com o resultado</h2>
+            <p>Filtre por tipo e status, selecione células ou copie toda a tabela para Excel e Google Sheets.</p>
+          </article>
+        </div>
+
+        <section class="docs-detail">
+          <div>
+            <p class="overline">Como interpretar</p>
+            <h2>Status da UNICO</h2>
+          </div>
+          <div class="status-guide">
+            <span data-status="Arquivado"><strong>Arquivado</strong> Processo encerrado ou arquivado.</span>
+            <span data-status="Mesa de análise"><strong>Mesa de análise</strong> Processo em análise ou assinatura.</span>
+            <span data-status="Pendente"><strong>Pendente</strong> Existem documentos pendentes.</span>
+            <span data-status="Não iniciado"><strong>Não iniciado</strong> O envio ainda não começou.</span>
+          </div>
+        </section>
+      </section>
+
+      <section class="page unico-page" data-route="unico" hidden>
+        <div class="unico-heading">
+          <div>
+            <p>UNICO People</p>
+            <h1>Consulta de Candidatos</h1>
+          </div>
+          <span class="connection-badge" id="unico-connection">
+            <span class="status-dot"></span>
+            <span id="unico-connection-text">Verificando integração</span>
+          </span>
+        </div>
+
+        <div class="notice warning" id="config-warning" hidden>
+          A integração ainda precisa das configurações de conta e tenant no servidor.
+          Consulte a página de Documentação.
+        </div>
+
+        <div class="unico-workspace">
+          <aside class="query-column">
+            <section class="query-card">
+              <div class="card-title">
+                <h2>Fluxo da consulta</h2>
+                <span id="input-count">0 de 2.000</span>
+              </div>
+
+              <form id="unico-form">
+                <div class="form-step">
+                  <label for="search-input"><span>1</span> Informe os candidatos</label>
+                  <textarea
+                    id="search-input"
+                    placeholder="Cole CPFs, nomes ou e-mails, um por linha"
+                    spellcheck="false"
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="form-step">
+                  <label for="credential-input">
+                    <span>2</span> Adicione a credencial
+                    <a href="#/documentacao" title="Abrir documentação" aria-label="Ajuda sobre credencial">?</a>
+                  </label>
+                  <div class="credential-field">
+                    <input
+                      id="credential-input"
+                      type="password"
+                      name="unico-session-token"
+                      autocomplete="new-password"
+                      placeholder="Cole o token da UNICO"
+                    >
+                    <button id="toggle-credential" type="button">Mostrar</button>
+                  </div>
+                </div>
+
+                <fieldset class="form-step">
+                  <legend>
+                    <span>3</span> Período da busca
+                    <output id="days-value" class="range-value" for="days-range">5 dias</output>
+                  </legend>
+                  <div class="range-control">
+                    <input
+                      id="days-range"
+                      class="period-range"
+                      type="range"
+                      min="5"
+                      max="365"
+                      step="5"
+                      value="5"
+                      aria-label="Período da busca em dias"
+                      aria-valuetext="5 dias"
+                    >
+                    <div class="range-labels" aria-hidden="true">
+                      <span>5 dias</span>
+                      <span>365 dias</span>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            </section>
+
+            <div class="query-actions">
+              <button class="primary-action" id="search-button" type="submit" form="unico-form">
+                <i data-lucide="search"></i>
+                <span>Consultar</span>
+                <span class="button-loader" aria-hidden="true"></span>
+              </button>
+              <button class="clear-action" id="clear-query" type="button" aria-label="Limpar consulta" title="Limpar consulta">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </aside>
+
+          <section class="results-column">
+            <div class="metrics-row top-metrics" aria-label="Resumo da consulta">
+              <article>
+                <strong id="metric-found">0</strong>
+                <span>Encontrados</span>
+              </article>
+              <article>
+                <strong id="metric-missing">0</strong>
+                <span>Não encontrados</span>
+              </article>
+              <article>
+                <strong id="metric-occurrences">0</strong>
+                <span>Ocorrências totais</span>
+              </article>
+            </div>
+
+            <div class="metrics-row status-metrics" aria-label="Indicadores por status">
+              <article data-status-card="Arquivado">
+                <strong id="metric-archived">0</strong>
+                <span>Arquivado</span>
+              </article>
+              <article data-status-card="Mesa de análise">
+                <strong id="metric-analysis">0</strong>
+                <span>Mesa de análise</span>
+              </article>
+              <article data-status-card="Pendente">
+                <strong id="metric-pending">0</strong>
+                <span>Pendente</span>
+              </article>
+              <article data-status-card="Não iniciado">
+                <strong id="metric-not-started">0</strong>
+                <span>Não iniciado</span>
+              </article>
+              <article data-status-card="Sem acesso recente">
+                <strong id="metric-no-recent">0</strong>
+                <span>Sem acesso recente</span>
+              </article>
+            </div>
+
+            <section class="results-card">
+              <div class="card-title results-title">
+                <div>
+                  <h2>Resultados</h2>
+                  <p id="result-caption">Aguardando consulta</p>
+                </div>
+                <button class="copy-button" id="copy-table" type="button" disabled>
+                  <i data-lucide="copy"></i>
+                  Copiar tabela
+                </button>
+              </div>
+
+              <div class="result-controls">
+                <label>
+                  Tipo
+                  <select id="type-filter">
+                    <option value="all">Todos os tipos</option>
+                    <option value="CPF">CPF</option>
+                    <option value="NOME">Nome</option>
+                    <option value="EMAIL">E-mail</option>
+                  </select>
+                </label>
+                <label>
+                  Resultado
+                  <select id="result-filter">
+                    <option value="all">Todos os resultados</option>
+                    <option value="Encontrado">Encontrados</option>
+                    <option value="Não encontrado">Não encontrados</option>
+                  </select>
+                </label>
+                <label>
+                  Status
+                  <select id="status-filter">
+                    <option value="all">Todos os status</option>
+                    <option value="Arquivado">Arquivado</option>
+                    <option value="Mesa de análise">Mesa de análise</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Não iniciado">Não iniciado</option>
+                    <option value="Sem acesso recente">Sem acesso recente</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="message" id="query-message" role="status" hidden></div>
+              <div class="results-empty" id="empty-state">
+                <i data-lucide="sheet"></i>
+                <h3>Os resultados aparecerão aqui</h3>
+                <p>Preencha o fluxo da consulta e clique em Consultar.</p>
+              </div>
+              <div class="table-scroll" id="table-container" hidden></div>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <section class="page base-page" data-route="base" hidden>
+        <div class="base-heading">
+          <div>
+            <a class="back-link" href="#/home">Voltar às bases</a>
+            <p id="base-page-eyebrow">Base de busca</p>
+            <h1 id="base-page-title">Consulta de Candidatos</h1>
+            <span id="base-page-description"></span>
+          </div>
+          <span class="connection-badge base-connection">
+            <span class="status-dot online"></span>
+            <span>Estrutura pronta</span>
+          </span>
+        </div>
+
+        <div class="base-workspace">
+          <aside class="query-column">
+            <section class="query-card">
+              <div class="card-title">
+                <h2>Fluxo da consulta</h2>
+                <span id="base-input-count">0 de 2.000</span>
+              </div>
+
+              <form id="base-form">
+                <div class="form-step">
+                  <label for="base-search-input"><span>1</span> Informe os candidatos</label>
+                  <textarea
+                    id="base-search-input"
+                    placeholder="Cole CPFs, nomes ou e-mails, um por linha"
+                    spellcheck="false"
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="form-step">
+                  <label for="base-table-select"><span>2</span> Selecione as tabelas</label>
+                  <select id="base-table-select" required></select>
+                </div>
+              </form>
+            </section>
+
+            <div class="query-actions">
+              <button class="primary-action" id="base-search-button" type="submit" form="base-form">
+                <i data-lucide="search"></i>
+                <span>Consultar</span>
+              </button>
+              <button class="clear-action" id="base-clear-query" type="button" aria-label="Limpar consulta da base" title="Limpar consulta">
+                <i data-lucide="x"></i>
+              </button>
+            </div>
+          </aside>
+
+          <section class="results-column">
+            <div class="metrics-row base-metrics" aria-label="Resumo da consulta da base">
+              <article>
+                <strong id="base-metric-queried">0</strong>
+                <span>Itens consultados</span>
+              </article>
+              <article>
+                <strong id="base-metric-found">0</strong>
+                <span>Itens encontrados</span>
+                <small>CPF | Nome | E-mail: 0</small>
+              </article>
+              <article>
+                <strong id="base-metric-occurrences">0</strong>
+                <span>Ocorrências</span>
+              </article>
+              <article>
+                <strong id="base-metric-missing">0</strong>
+                <span>Não encontrados</span>
+              </article>
+            </div>
+
+            <section class="results-card base-results-card">
+              <div class="card-title results-title">
+                <div>
+                  <h2>Resultados</h2>
+                  <p id="base-result-caption">Aguardando consulta</p>
+                </div>
+                <button class="copy-button" id="base-copy-table" type="button" disabled>
+                  <i data-lucide="copy"></i>
+                  Copiar tabela
+                </button>
+              </div>
+
+              <div class="base-result-controls">
+                <label>
+                  Tipo
+                  <select id="base-type-filter">
+                    <option>Todos os tipos</option>
+                    <option>CPF</option>
+                    <option>Nome</option>
+                    <option>E-mail</option>
+                  </select>
+                </label>
+                <label>
+                  Status
+                  <select id="base-status-filter">
+                    <option>Todos os status</option>
+                  </select>
+                </label>
+                <label>
+                  Colunas
+                  <select id="base-column-mode">
+                    <option>Resumo</option>
+                    <option>Todas as colunas</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="message" id="base-query-message" role="status" hidden></div>
+              <div class="results-empty base-results-empty" id="base-empty-state">
+                <i data-lucide="sheet"></i>
+                <h3>Os resultados aparecerão aqui</h3>
+                <p>A estrutura da busca será conectada à tabela da base na próxima etapa.</p>
+              </div>
+            </section>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Portal interno de Busca de Candidatos</span>
+      <nav>
+        <a href="#/documentacao">Ajuda</a>
+        <a href="#/documentacao">Termos de uso</a>
+      </nav>
+    </footer>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+    <script src="./icons.js?v=20260731-logica-final"></script>
+    <script src="./config.js?v=20260731-logica-final"></script>
+    <script src="./app.js?v=20260811-preservar-duplicados"></script>
+  </body>
+</html>

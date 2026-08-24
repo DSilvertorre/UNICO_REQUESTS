@@ -1,0 +1,9 @@
+# Do not upload local credentials or test caches to Cloud Build.
+.env
+.env.*
+!.env.example
+__pycache__/
+.pytest_cache/
+pytest-cache-files-*/
+tests/
+*.pyc
