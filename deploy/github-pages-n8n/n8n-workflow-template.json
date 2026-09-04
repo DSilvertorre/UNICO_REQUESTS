@@ -1,0 +1,79 @@
+{
+  "name": "UNICO proxy para GitHub Pages (modelo)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "unico-search",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "b1d2a1c0-7e83-4a03-a462-4c9db22d1001",
+      "name": "Receber consulta do portal",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "unico-search"
+    },
+    {
+      "parameters": {
+        "url": "https://admin.acessorh.com.br/svc2/search/people",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "account", "value": "={{ $env.UNICO_ACCOUNT_ID }}" },
+            { "name": "q", "value": "={{ $json.query.q }}" }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "authorization", "value": "={{ $json.headers.authorization }}" },
+            { "name": "tenant", "value": "={{ $env.UNICO_TENANT }}" },
+            { "name": "accept", "value": "application/json" },
+            { "name": "cookie", "value": "={{ $env.UNICO_COOKIE || '' }}" }
+          ]
+        },
+        "options": {
+          "timeout": 25000,
+          "response": { "response": { "neverError": true } }
+        }
+      },
+      "id": "b1d2a1c0-7e83-4a03-a462-4c9db22d1002",
+      "name": "Consultar UNICO",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [280, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "firstIncomingItem",
+        "options": {}
+      },
+      "id": "b1d2a1c0-7e83-4a03-a462-4c9db22d1003",
+      "name": "Responder ao portal",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [560, 0]
+    }
+  ],
+  "connections": {
+    "Receber consulta do portal": {
+      "main": [[{ "node": "Consultar UNICO", "type": "main", "index": 0 }]]
+    },
+    "Consultar UNICO": {
+      "main": [[{ "node": "Responder ao portal", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false,
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none"
+  },
+  "versionId": "b1d2a1c0-7e83-4a03-a462-4c9db22d1004",
+  "meta": { "templateCredsSetupCompleted": false },
+  "tags": []
+}

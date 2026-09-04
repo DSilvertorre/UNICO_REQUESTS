@@ -1,0 +1,50 @@
+name: Publicar portal UNICO no GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "frontend/**"
+      - "deploy/github-pages-n8n/**"
+      - ".github/workflows/deploy-github-pages-n8n.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o repositorio
+        uses: actions/checkout@v4
+
+      - name: Montar artefato estatico
+        run: |
+          mkdir -p public
+          cp frontend/index.html frontend/styles.css frontend/icons.js frontend/app.js public/
+          cp deploy/github-pages-n8n/config.js public/config.js
+          # Caminhos relativos funcionam tanto em dominio proprio quanto em
+          # https://organizacao.github.io/nome-do-repositorio/.
+          sed -i 's|href="/styles.css|href="./styles.css|g' public/index.html
+          sed -i 's|src="/icons.js|src="./icons.js|g' public/index.html
+          sed -i 's|src="/config.js|src="./config.js|g' public/index.html
+          sed -i 's|src="/app.js|src="./app.js|g' public/index.html
+
+      - name: Enviar artefato ao GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4

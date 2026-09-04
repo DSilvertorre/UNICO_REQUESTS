@@ -141,7 +141,7 @@ def test_address_self_declaration_is_a_tracked_pending_document():
     assert _pending_documents(admission) == "Autodeclaração de endereço"
 
 
-def test_recent_period_prefers_document_activity_over_limit_date():
+def test_recent_period_uses_limit_date_instead_of_document_activity():
     old_activity = datetime.now(timezone.utc) - timedelta(days=30)
     future_limit = datetime.now(timezone.utc) + timedelta(days=10)
     admission = {
@@ -149,16 +149,18 @@ def test_recent_period_prefers_document_activity_over_limit_date():
         "documentList": [{"timestamp": old_activity.isoformat(), "code": 200}],
     }
 
-    assert not _is_recent(admission, days=5)
+    assert _is_recent(admission, days=5)
 
 
 def test_old_candidate_is_reported_without_recent_access(monkeypatch):
     service = configured_service(monkeypatch)
-    old_activity = datetime.now(timezone.utc) - timedelta(days=30)
+    old_limit = datetime.now(timezone.utc) - timedelta(days=30)
+    recent_activity = datetime.now(timezone.utc) - timedelta(days=1)
     admission = {
         "status": {"overview": {"code": "completed"}},
         "candidate": {"name": "Pessoa Teste"},
-        "documentList": [{"timestamp": old_activity.isoformat(), "code": 220}],
+        "limitDate": old_limit.isoformat(),
+        "documentList": [{"timestamp": recent_activity.isoformat(), "code": 220}],
     }
     monkeypatch.setattr(service, "_request", lambda session, term, credential: ([admission], 1))
 

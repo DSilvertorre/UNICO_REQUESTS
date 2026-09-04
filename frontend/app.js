@@ -347,12 +347,6 @@ function formatDate(value) {
 }
 
 function referenceDate(admission) {
-  const dates = (admission?.documentList || [])
-    .map((document) => parseDate(document.timestamp))
-    .filter(Boolean)
-    .sort((a, b) => b.getTime() - a.getTime());
-  if (dates[0]) return dates[0];
-
   return parseDate(admission?.limitDate);
 }
 

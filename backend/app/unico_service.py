@@ -82,14 +82,6 @@ def _format_date(value: Any) -> str:
 
 
 def _reference_date(admission: dict) -> datetime | None:
-    document_dates = [
-        date
-        for document in admission.get("documentList", [])
-        if (date := _parse_date(document.get("timestamp"))) and date.year > 1900
-    ]
-    if document_dates:
-        return max(document_dates)
-
     limit_date = _parse_date(admission.get("limitDate"))
     if limit_date and limit_date.year > 1900:
         return limit_date
