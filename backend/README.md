@@ -1,10 +1,8 @@
-# Backend de Busca de Candidatos
+# Backend UNICO People
 
 ## O que este backend faz
 
-O servidor entrega o HTML e executa as consultas do UNICO People sem depender
-do BigQuery. A busca de `Processos Seletivos SP` continua disponível no código,
-mas permanece opcional até a etapa de teste das bases internas.
+O servidor entrega o HTML e executa exclusivamente as consultas do UNICO People.
 
 Endpoints:
 
@@ -13,9 +11,6 @@ GET /
 GET /health
 GET /unico/config
 POST /unico/search
-GET /bases
-GET /bases/processos-seletivos-sp
-POST /search/processos-seletivos-sp
 ```
 
 ## Configuração UNICO
@@ -30,16 +25,6 @@ UNICO_COOKIE=
 
 `UNICO_COOKIE` é opcional e deve ser preenchido somente quando a sessão exigir.
 A credencial de autorização é informada na própria tela e não é salva.
-
-## Configuração BigQuery
-
-Quando os testes das bases internas começarem, defina a tabela:
-
-```powershell
-$env:BQ_PROCESSOS_SELETIVOS_SP_TABLE="seu-projeto.seu_dataset.processos_seletivos_sp"
-```
-
-O Google BigQuery usa as credenciais padrão do ambiente.
 
 ## Rodar localmente
 

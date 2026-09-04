@@ -129,13 +129,14 @@ def _status(admission: dict) -> str:
         admission.get("statusCode"),
         admission.get("status_code"),
     )
+    normalized_codes = [
+        str(value).lower().strip()
+        for value in code_values
+        if value is not None and str(value).strip()
+    ]
     code = next(
-        (
-            str(value).lower().strip()
-            for value in code_values
-            if value is not None and str(value).strip()
-        ),
-        "",
+        (value for value in normalized_codes if value in {"archived", "completed", "pending"}),
+        normalized_codes[0] if normalized_codes else "",
     )
 
     if code == "archived":

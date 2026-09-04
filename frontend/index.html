@@ -7,13 +7,13 @@
     <title>UNICO Search Portal</title>
     <meta
       name="description"
-      content="Portal interno para consulta de candidatos na UNICO e nas bases operacionais."
+      content="Portal interno para consulta de candidatos na UNICO People."
     >
-    <link rel="stylesheet" href="./styles.css?v=20260731-logica-final">
+    <link rel="stylesheet" href="/styles.css?v=20260903-unico-only">
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#/home" aria-label="UNICO Search Portal - Home">
+      <a class="brand" href="#/unico" aria-label="UNICO Search Portal">
         <span class="brand-symbol" aria-hidden="true">
           <i data-lucide="user-round-search"></i>
         </span>
@@ -28,72 +28,13 @@
       </button>
 
       <nav class="top-nav" id="top-nav" aria-label="Navegação principal">
-        <a href="#/home" data-route-link="home">Home</a>
+        <a href="#/unico" data-route-link="unico">UNICO People</a>
         <span aria-hidden="true"></span>
         <a href="#/documentacao" data-route-link="documentacao">Documentação</a>
       </nav>
     </header>
 
     <main>
-      <section class="page home-page" data-route="home">
-        <div class="home-hero">
-          <p>Portal interno de busca</p>
-          <h1>Busque seus candidatos<br>na UNICO e Planilhas</h1>
-        </div>
-
-        <div class="home-content">
-          <div class="section-heading centered">
-            <p>Bases de busca</p>
-            <h2>Escolha onde deseja consultar</h2>
-          </div>
-
-          <div class="base-grid">
-            <article class="base-card">
-              <span class="base-icon"><i data-lucide="rocket"></i></span>
-              <h3>GO Live & Takeover</h3>
-              <p>Operações de implantação e takeover.</p>
-              <a href="#/base/go-live-takeover">Acessar base</a>
-            </article>
-
-            <article class="base-card">
-              <span class="base-icon"><i data-lucide="users-round"></i></span>
-              <h3>Processos Seletivos SP</h3>
-              <p>Processos seletivos presenciais em São Paulo.</p>
-              <a href="#/base/processos-seletivos-sp">Acessar base</a>
-            </article>
-
-            <article class="base-card">
-              <span class="base-icon"><i data-lucide="map-pinned"></i></span>
-              <h3>Periféricos</h3>
-              <p>Consultas das unidades periféricas.</p>
-              <a href="#/base/perifericos">Acessar base</a>
-            </article>
-
-            <article class="base-card">
-              <span class="base-icon"><i data-lucide="clipboard-list"></i></span>
-              <h3>Processo Online</h3>
-              <p>Registros dos processos realizados on-line.</p>
-              <a href="#/base/processo-online">Acessar base</a>
-            </article>
-
-            <article class="base-card">
-              <span class="base-icon"><i data-lucide="user-round-check"></i></span>
-              <h3>Consolidado</h3>
-              <p>Visão consolidada das bases operacionais.</p>
-              <a href="#/base/consolidado">Acessar base</a>
-            </article>
-
-            <article class="base-card featured">
-              <span class="available-badge">Disponível</span>
-              <span class="base-icon"><i data-lucide="chart-no-axes-combined"></i></span>
-              <h3>UNICO People</h3>
-              <p>Status, pendências e ocorrências de admissões.</p>
-              <a href="#/unico">Acessar base</a>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section class="page docs-page" data-route="documentacao" hidden>
         <div class="docs-hero">
           <p>Ajuda operacional</p>
@@ -327,129 +268,10 @@
         </div>
       </section>
 
-      <section class="page base-page" data-route="base" hidden>
-        <div class="base-heading">
-          <div>
-            <a class="back-link" href="#/home">Voltar às bases</a>
-            <p id="base-page-eyebrow">Base de busca</p>
-            <h1 id="base-page-title">Consulta de Candidatos</h1>
-            <span id="base-page-description"></span>
-          </div>
-          <span class="connection-badge base-connection">
-            <span class="status-dot online"></span>
-            <span>Estrutura pronta</span>
-          </span>
-        </div>
-
-        <div class="base-workspace">
-          <aside class="query-column">
-            <section class="query-card">
-              <div class="card-title">
-                <h2>Fluxo da consulta</h2>
-                <span id="base-input-count">0 de 2.000</span>
-              </div>
-
-              <form id="base-form">
-                <div class="form-step">
-                  <label for="base-search-input"><span>1</span> Informe os candidatos</label>
-                  <textarea
-                    id="base-search-input"
-                    placeholder="Cole CPFs, nomes ou e-mails, um por linha"
-                    spellcheck="false"
-                    required
-                  ></textarea>
-                </div>
-
-                <div class="form-step">
-                  <label for="base-table-select"><span>2</span> Selecione as tabelas</label>
-                  <select id="base-table-select" required></select>
-                </div>
-              </form>
-            </section>
-
-            <div class="query-actions">
-              <button class="primary-action" id="base-search-button" type="submit" form="base-form">
-                <i data-lucide="search"></i>
-                <span>Consultar</span>
-              </button>
-              <button class="clear-action" id="base-clear-query" type="button" aria-label="Limpar consulta da base" title="Limpar consulta">
-                <i data-lucide="x"></i>
-              </button>
-            </div>
-          </aside>
-
-          <section class="results-column">
-            <div class="metrics-row base-metrics" aria-label="Resumo da consulta da base">
-              <article>
-                <strong id="base-metric-queried">0</strong>
-                <span>Itens consultados</span>
-              </article>
-              <article>
-                <strong id="base-metric-found">0</strong>
-                <span>Itens encontrados</span>
-                <small>CPF | Nome | E-mail: 0</small>
-              </article>
-              <article>
-                <strong id="base-metric-occurrences">0</strong>
-                <span>Ocorrências</span>
-              </article>
-              <article>
-                <strong id="base-metric-missing">0</strong>
-                <span>Não encontrados</span>
-              </article>
-            </div>
-
-            <section class="results-card base-results-card">
-              <div class="card-title results-title">
-                <div>
-                  <h2>Resultados</h2>
-                  <p id="base-result-caption">Aguardando consulta</p>
-                </div>
-                <button class="copy-button" id="base-copy-table" type="button" disabled>
-                  <i data-lucide="copy"></i>
-                  Copiar tabela
-                </button>
-              </div>
-
-              <div class="base-result-controls">
-                <label>
-                  Tipo
-                  <select id="base-type-filter">
-                    <option>Todos os tipos</option>
-                    <option>CPF</option>
-                    <option>Nome</option>
-                    <option>E-mail</option>
-                  </select>
-                </label>
-                <label>
-                  Status
-                  <select id="base-status-filter">
-                    <option>Todos os status</option>
-                  </select>
-                </label>
-                <label>
-                  Colunas
-                  <select id="base-column-mode">
-                    <option>Resumo</option>
-                    <option>Todas as colunas</option>
-                  </select>
-                </label>
-              </div>
-
-              <div class="message" id="base-query-message" role="status" hidden></div>
-              <div class="results-empty base-results-empty" id="base-empty-state">
-                <i data-lucide="sheet"></i>
-                <h3>Os resultados aparecerão aqui</h3>
-                <p>A estrutura da busca será conectada à tabela da base na próxima etapa.</p>
-              </div>
-            </section>
-          </section>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">
-      <span>Portal interno de Busca de Candidatos</span>
+      <span>Portal interno UNICO People</span>
       <nav>
         <a href="#/documentacao">Ajuda</a>
         <a href="#/documentacao">Termos de uso</a>
@@ -457,8 +279,8 @@
     </footer>
 
     <div class="toast" id="toast" role="status" hidden></div>
-    <script src="./icons.js?v=20260731-logica-final"></script>
-    <script src="./config.js?v=20260731-logica-final"></script>
-    <script src="./app.js?v=20260811-preservar-duplicados"></script>
+    <script src="/icons.js?v=20260903-unico-only"></script>
+    <script src="/config.js?v=20260903-unico-only"></script>
+    <script src="/app.js?v=20260903-unico-only"></script>
   </body>
 </html>

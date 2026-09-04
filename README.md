@@ -1,13 +1,12 @@
-# Portal de Busca de Candidatos
+# Portal UNICO People
 
-Portal interno para consultas de candidatos na UNICO People e, progressivamente,
-nas bases corporativas armazenadas no BigQuery.
+Portal interno para consultar candidatos exclusivamente na UNICO People.
 
 ## Estrutura
 
-- `frontend/`: interface HTML, estilos, ícones e comportamento da aplicação.
-- `backend/`: API FastAPI, integração UNICO, preparação para BigQuery e testes.
-- `docs/`: documentação de conexão e regras do sistema.
+- `frontend/`: páginas da UNICO People e documentação operacional.
+- `backend/`: API FastAPI e integração com a UNICO.
+- `docs/`: instruções de publicação estática no Grid.
 
 ## Execução local
 

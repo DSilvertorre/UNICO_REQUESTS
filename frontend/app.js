@@ -6,33 +6,6 @@ const API_BASE = (() => {
 const CONFIG = window.SEARCH_PORTAL_CONFIG || {};
 const USE_UNICO_DIRECT = CONFIG.mode === "unico-direct";
 const UNICO_DIRECT = CONFIG.unico || {};
-const BASES = {
-  "go-live-takeover": {
-    title: "GO Live & Takeover",
-    description: "Consultas das operações de implantação e takeover.",
-    tableName: "GO Live & Takeover",
-  },
-  "processos-seletivos-sp": {
-    title: "Processos Seletivos SP",
-    description: "Consultas dos processos seletivos presenciais em São Paulo.",
-    tableName: "Processos Seletivos SP",
-  },
-  perifericos: {
-    title: "Periféricos",
-    description: "Consultas das unidades periféricas.",
-    tableName: "Periféricos",
-  },
-  "processo-online": {
-    title: "Processo Online",
-    description: "Consultas dos processos realizados on-line.",
-    tableName: "Processo Online",
-  },
-  consolidado: {
-    title: "Consolidado",
-    description: "Visão consolidada das bases operacionais.",
-    tableName: "Consolidado",
-  },
-};
 
 const state = {
   columns: [],
@@ -40,6 +13,10 @@ const state = {
   filteredRows: [],
   selecting: false,
   startCell: null,
+  selectionMode: "cells",
+  lastPointer: null,
+  selectionFrame: null,
+  selectionMoveHandler: null,
 };
 
 const els = {
@@ -73,19 +50,6 @@ const els = {
   metricPending: document.getElementById("metric-pending"),
   metricNotStarted: document.getElementById("metric-not-started"),
   metricNoRecent: document.getElementById("metric-no-recent"),
-  basePageTitle: document.getElementById("base-page-title"),
-  basePageDescription: document.getElementById("base-page-description"),
-  baseInput: document.getElementById("base-search-input"),
-  baseInputCount: document.getElementById("base-input-count"),
-  baseForm: document.getElementById("base-form"),
-  baseTableSelect: document.getElementById("base-table-select"),
-  baseClearQuery: document.getElementById("base-clear-query"),
-  baseMessage: document.getElementById("base-query-message"),
-  baseResultCaption: document.getElementById("base-result-caption"),
-  baseMetricQueried: document.getElementById("base-metric-queried"),
-  baseMetricFound: document.getElementById("base-metric-found"),
-  baseMetricOccurrences: document.getElementById("base-metric-occurrences"),
-  baseMetricMissing: document.getElementById("base-metric-missing"),
   toast: document.getElementById("toast"),
 };
 
@@ -96,38 +60,21 @@ function initializeIcons() {
 }
 
 function route() {
-  const requested = location.hash.replace("#/", "") || "home";
-  const baseId = requested.startsWith("base/") ? requested.slice(5) : "";
-  const routeName = BASES[baseId]
-    ? "base"
-    : ["home", "documentacao", "unico"].includes(requested)
-      ? requested
-      : "home";
+  const pathRoute = location.pathname.split("/").filter(Boolean).pop();
+  const requested = location.hash.replace("#/", "") || pathRoute || "unico";
+  const routeName = ["documentacao", "unico"].includes(requested)
+    ? requested
+    : "unico";
 
   document.querySelectorAll("[data-route]").forEach((page) => {
     page.hidden = page.dataset.route !== routeName;
   });
-  if (routeName === "base") renderBasePage(baseId);
   document.querySelectorAll("[data-route-link]").forEach((link) => {
     link.classList.toggle("active", link.dataset.routeLink === routeName);
   });
 
   els.topNav.classList.remove("open");
   window.scrollTo({ top: 0, behavior: "auto" });
-}
-
-function renderBasePage(baseId) {
-  const base = BASES[baseId];
-  if (!base) return;
-
-  els.basePageTitle.textContent = base.title;
-  els.basePageDescription.textContent = base.description;
-  els.baseTableSelect.innerHTML = `
-    <option value="" selected disabled>Selecione as tabelas</option>
-    <option value="all">Todas as tabelas</option>
-    <option value="${baseId}">${base.tableName}</option>
-  `;
-  resetBaseResults();
 }
 
 function parseEntries(value) {
@@ -173,62 +120,6 @@ function updateInputCount() {
   const count = parseEntries(els.input.value).length;
   els.inputCount.textContent = `${count.toLocaleString("pt-BR")} de 2.000`;
   els.inputCount.style.color = count > 2000 ? "var(--red)" : "";
-}
-
-function updateBaseInputCount() {
-  const count = parseEntries(els.baseInput.value).length;
-  els.baseInputCount.textContent = `${count.toLocaleString("pt-BR")} de 2.000`;
-  els.baseInputCount.style.color = count > 2000 ? "var(--red)" : "";
-}
-
-function showBaseMessage(text, type = "info") {
-  els.baseMessage.textContent = text;
-  els.baseMessage.className = `message ${type}`;
-  els.baseMessage.hidden = false;
-}
-
-function resetBaseResults() {
-  els.baseMetricQueried.textContent = "0";
-  els.baseMetricFound.textContent = "0";
-  els.baseMetricOccurrences.textContent = "0";
-  els.baseMetricMissing.textContent = "0";
-  els.baseResultCaption.textContent = "Aguardando consulta";
-  els.baseMessage.hidden = true;
-  els.baseMessage.textContent = "";
-  if (els.baseInput) updateBaseInputCount();
-}
-
-function submitBaseSearch(event) {
-  event.preventDefault();
-  const entries = parseEntries(els.baseInput.value);
-  if (!entries.length) {
-    showBaseMessage("Adicione ao menos um CPF, nome ou e-mail.", "error");
-    els.baseInput.focus();
-    return;
-  }
-  if (entries.length > 2000) {
-    showBaseMessage("A consulta aceita no máximo 2.000 entradas por execução.", "error");
-    return;
-  }
-  if (!els.baseTableSelect.value) {
-    showBaseMessage("Selecione ao menos uma tabela para continuar.", "error");
-    els.baseTableSelect.focus();
-    return;
-  }
-
-  els.baseMetricQueried.textContent = entries.length.toLocaleString("pt-BR");
-  els.baseResultCaption.textContent = "Aguardando conexão com a tabela";
-  showBaseMessage(
-    "A página está pronta. A consulta será ativada quando a tabela desta base for conectada.",
-    "info"
-  );
-}
-
-function clearBaseQuery() {
-  els.baseInput.value = "";
-  els.baseTableSelect.selectedIndex = 0;
-  resetBaseResults();
-  els.baseInput.focus();
 }
 
 function updatePeriodLabel() {
@@ -287,16 +178,25 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
+}
+
+function tsvValue(value) {
+  return String(value ?? "").replaceAll("\t", " ").replaceAll(/\r?\n/g, " ");
+}
+
 function renderCell(column, value, rowIndex, columnIndex) {
   const safeValue = escapeHtml(value);
+  const copyValue = escapeAttribute(tsvValue(value));
   if (column === "Status" && value) {
     return `
-      <td tabindex="0" data-row="${rowIndex}" data-column="${columnIndex}" data-copy="${safeValue}">
+      <td tabindex="0" data-row="${rowIndex}" data-column="${columnIndex}" data-copy="${copyValue}">
         <span class="status-chip" data-status="${safeValue}">${safeValue}</span>
       </td>
     `;
   }
-  return `<td tabindex="0" data-row="${rowIndex}" data-column="${columnIndex}" data-copy="${safeValue}">${safeValue}</td>`;
+  return `<td tabindex="0" data-row="${rowIndex}" data-column="${columnIndex}" data-copy="${copyValue}">${safeValue}</td>`;
 }
 
 function updateMetrics(payload = null) {
@@ -356,7 +256,11 @@ function renderTable() {
   els.tableContainer.innerHTML = `
     <table class="results-table" id="results-table" aria-label="Resultados da consulta UNICO">
       <thead>
-        <tr>${state.columns.map((column) => `<th>${escapeHtml(column)}</th>`).join("")}</tr>
+        <tr>${state.columns.map((column, columnIndex) => `
+          <th tabindex="0" data-column="${columnIndex}" title="Selecionar coluna ${escapeAttribute(column)}">
+            ${escapeHtml(column)}
+          </th>
+        `).join("")}</tr>
       </thead>
       <tbody>
         ${state.filteredRows.map((row, rowIndex) => `
@@ -377,6 +281,7 @@ function selectionTsv() {
   if (!table) return "";
   const selected = [...table.querySelectorAll("td.selected")];
   if (!selected.length) return "";
+  const selectedHeaders = [...table.querySelectorAll("th.selected")];
 
   const rows = selected.map((cell) => Number(cell.dataset.row));
   const columns = selected.map((cell) => Number(cell.dataset.column));
@@ -388,6 +293,14 @@ function selectionTsv() {
   };
 
   const output = [];
+  if (selectedHeaders.length) {
+    output.push(
+      state.columns
+        .slice(bounds.minColumn, bounds.maxColumn + 1)
+        .map(tsvValue)
+        .join("\t")
+    );
+  }
   for (let row = bounds.minRow; row <= bounds.maxRow; row += 1) {
     const values = [];
     for (let column = bounds.minColumn; column <= bounds.maxColumn; column += 1) {
@@ -400,13 +313,9 @@ function selectionTsv() {
 }
 
 function fullTableTsv() {
-  const rows = [state.columns.join("\t")];
+  const rows = [state.columns.map(tsvValue).join("\t")];
   state.filteredRows.forEach((row) => {
-    rows.push(
-      state.columns
-        .map((column) => String(row[column] ?? "").replaceAll("\t", " "))
-        .join("\t")
-    );
+    rows.push(state.columns.map((column) => tsvValue(row[column])).join("\t"));
   });
   return rows.join("\n");
 }
@@ -687,6 +596,26 @@ async function searchUnicoDirect(entries, credential, days) {
 function bindCellSelection() {
   const table = document.getElementById("results-table");
   if (!table) return;
+  const scroller = els.tableContainer;
+
+  function paintBounds(minRow, maxRow, minColumn, maxColumn, columnsOnly = false) {
+    table.querySelectorAll("td").forEach((cell) => {
+      const row = Number(cell.dataset.row);
+      const column = Number(cell.dataset.column);
+      cell.classList.toggle(
+        "selected",
+        row >= minRow && row <= maxRow && column >= minColumn && column <= maxColumn
+      );
+    });
+
+    table.querySelectorAll("th[data-column]").forEach((header) => {
+      const column = Number(header.dataset.column);
+      header.classList.toggle(
+        "selected",
+        columnsOnly && column >= minColumn && column <= maxColumn
+      );
+    });
+  }
 
   function paintSelection(endCell) {
     const startRow = Number(state.startCell.dataset.row);
@@ -698,29 +627,99 @@ function bindCellSelection() {
     const minColumn = Math.min(startColumn, endColumn);
     const maxColumn = Math.max(startColumn, endColumn);
 
-    table.querySelectorAll("td").forEach((cell) => {
-      const row = Number(cell.dataset.row);
-      const column = Number(cell.dataset.column);
-      cell.classList.toggle(
-        "selected",
-        row >= minRow && row <= maxRow && column >= minColumn && column <= maxColumn
-      );
-    });
+    paintBounds(minRow, maxRow, minColumn, maxColumn);
   }
 
-  table.addEventListener("mousedown", (event) => {
+  function paintColumnSelection(endHeader) {
+    const startColumn = Number(state.startCell.dataset.column);
+    const endColumn = Number(endHeader.dataset.column);
+    const minColumn = Math.min(startColumn, endColumn);
+    const maxColumn = Math.max(startColumn, endColumn);
+    paintBounds(0, state.filteredRows.length - 1, minColumn, maxColumn, true);
+  }
+
+  function updateSelectionFromPointer() {
+    if (!state.selecting || !state.lastPointer) {
+      state.selectionFrame = null;
+      return;
+    }
+
+    const rect = scroller.getBoundingClientRect();
+    const edge = 44;
+    const maxSpeed = 22;
+    const { clientX, clientY } = state.lastPointer;
+    let deltaX = 0;
+    let deltaY = 0;
+
+    if (clientX < rect.left + edge) {
+      deltaX = -maxSpeed * Math.min(1, (rect.left + edge - clientX) / edge);
+    } else if (clientX > rect.right - edge) {
+      deltaX = maxSpeed * Math.min(1, (clientX - (rect.right - edge)) / edge);
+    }
+
+    if (state.selectionMode === "cells") {
+      if (clientY < rect.top + edge) {
+        deltaY = -maxSpeed * Math.min(1, (rect.top + edge - clientY) / edge);
+      } else if (clientY > rect.bottom - edge) {
+        deltaY = maxSpeed * Math.min(1, (clientY - (rect.bottom - edge)) / edge);
+      }
+    }
+
+    if (deltaX || deltaY) {
+      scroller.scrollBy(deltaX, deltaY);
+      const headerHeight = table.tHead?.offsetHeight || 0;
+      const targetX = Math.max(rect.left + 2, Math.min(clientX, rect.left + scroller.clientWidth - 2));
+      const targetTop = state.selectionMode === "columns" ? rect.top + 2 : rect.top + headerHeight + 2;
+      const targetY = Math.max(
+        targetTop,
+        Math.min(clientY, rect.top + scroller.clientHeight - 2)
+      );
+      const selector = state.selectionMode === "columns" ? "th[data-column]" : "td";
+      const target = document.elementFromPoint(targetX, targetY)?.closest(selector);
+      if (target && table.contains(target)) {
+        if (state.selectionMode === "columns") paintColumnSelection(target);
+        else paintSelection(target);
+      }
+    }
+
+    state.selectionFrame = window.requestAnimationFrame(updateSelectionFromPointer);
+  }
+
+  function startAutoScroll(event) {
+    state.lastPointer = { clientX: event.clientX, clientY: event.clientY };
+    if (!state.selectionFrame) {
+      state.selectionFrame = window.requestAnimationFrame(updateSelectionFromPointer);
+    }
+  }
+
+  table.addEventListener("pointerdown", (event) => {
+    const header = event.target.closest("th[data-column]");
     const cell = event.target.closest("td");
-    if (!cell) return;
+    if (!cell && !header) return;
     event.preventDefault();
     state.selecting = true;
-    state.startCell = cell;
-    paintSelection(cell);
+    state.startCell = header || cell;
+    state.selectionMode = header ? "columns" : "cells";
+    if (header) paintColumnSelection(header);
+    else paintSelection(cell);
+    startAutoScroll(event);
   });
 
-  table.addEventListener("mouseover", (event) => {
-    const cell = event.target.closest("td");
-    if (state.selecting && cell) paintSelection(cell);
+  table.addEventListener("pointerover", (event) => {
+    if (!state.selecting) return;
+    const target = event.target.closest(
+      state.selectionMode === "columns" ? "th[data-column]" : "td"
+    );
+    if (!target) return;
+    if (state.selectionMode === "columns") paintColumnSelection(target);
+    else paintSelection(target);
   });
+
+  if (state.selectionMoveHandler) {
+    window.removeEventListener("pointermove", state.selectionMoveHandler);
+  }
+  state.selectionMoveHandler = startAutoScroll;
+  window.addEventListener("pointermove", state.selectionMoveHandler);
 }
 
 async function checkApi() {
@@ -819,8 +818,13 @@ function clearQuery() {
 }
 
 window.addEventListener("hashchange", route);
-window.addEventListener("mouseup", () => {
+window.addEventListener("pointerup", () => {
   state.selecting = false;
+  state.lastPointer = null;
+  if (state.selectionFrame) {
+    window.cancelAnimationFrame(state.selectionFrame);
+    state.selectionFrame = null;
+  }
 });
 document.addEventListener("copy", (event) => {
   const text = selectionTsv();
@@ -834,12 +838,9 @@ els.menuButton.addEventListener("click", () => {
   els.topNav.classList.toggle("open");
 });
 els.input.addEventListener("input", updateInputCount);
-els.baseInput.addEventListener("input", updateBaseInputCount);
 els.periodRange.addEventListener("input", updatePeriodLabel);
 els.form.addEventListener("submit", submitSearch);
-els.baseForm.addEventListener("submit", submitBaseSearch);
 els.clearQuery.addEventListener("click", clearQuery);
-els.baseClearQuery.addEventListener("click", clearBaseQuery);
 els.typeFilter.addEventListener("change", applyFilters);
 els.resultFilter.addEventListener("change", applyFilters);
 els.statusFilter.addEventListener("change", applyFilters);

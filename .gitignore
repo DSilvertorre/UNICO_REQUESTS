@@ -12,6 +12,17 @@
 *credentials*.json
 *service-account*.json
 *service_account*.json
+client_secret*.json
+oauth*.json
+token.json
+*.token
+*.secret
+*.session
+cookies.txt
+auth.json
+**/secrets/
+**/.secrets/
+.envrc
 
 # Python e testes
 **/__pycache__/
