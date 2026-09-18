@@ -289,7 +289,7 @@ textarea:focus-visible {
 .credential-guide {
   display: grid;
   width: min(1120px, calc(100% - 40px));
-  grid-template-columns: minmax(280px, 0.8fr) minmax(420px, 1.2fr);
+  grid-template-columns: 1fr;
   gap: 34px;
   align-items: center;
   margin: 20px auto;
@@ -326,11 +326,11 @@ textarea:focus-visible {
 
 .credential-steps figure {
   display: grid;
-  grid-template-columns: 190px 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   align-items: center;
   margin: 0;
-  padding: 10px;
+  padding: 16px;
   background: #f8f9f8;
   border: 1px solid var(--line);
   border-radius: 5px;
@@ -345,7 +345,7 @@ textarea:focus-visible {
 
 .credential-steps figcaption {
   color: var(--ink);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.45;
 }
@@ -1104,10 +1104,6 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
-  .credential-steps figure {
-    grid-template-columns: 150px 1fr;
-  }
-
   .top-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1156,10 +1152,6 @@ select:focus {
 
   .result-controls {
     gap: 8px;
-  }
-
-  .credential-steps figure {
-    grid-template-columns: 1fr;
   }
 
 }
