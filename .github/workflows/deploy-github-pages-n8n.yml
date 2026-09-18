@@ -32,6 +32,7 @@ jobs:
         run: |
           mkdir -p public
           cp frontend/index.html frontend/styles.css frontend/icons.js frontend/app.js public/
+          cp -R frontend/assets public/assets
           cp deploy/github-pages-n8n/config.js public/config.js
           # Caminhos relativos funcionam tanto em dominio proprio quanto em
           # https://organizacao.github.io/nome-do-repositorio/.

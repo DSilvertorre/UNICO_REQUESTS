@@ -54,6 +54,19 @@ GitHub Pages.
    n8n os ignora.
 4. Faca commit e push. O workflow do GitHub gera e publica o site.
 
+## Orientacao para usuarios do portal
+
+A pagina **Documentacao** do portal inclui um passo a passo visual para
+localizar e inserir a credencial temporaria: acesso ao UNICO People, aba
+**Network**, requisicao de busca e cabecalho **Authorization**. As imagens sao
+ilustrativas, com valores mascarados; elas nao contem credenciais reais.
+
+Instrua os usuarios a colar a credencial temporaria recebida no campo
+**Adicione a credencial**, consultar os candidatos e nao compartilhar o valor
+em capturas de tela, mensagens ou planilhas. Se a UNICO responder `401` ou
+`403`, a credencial expirou ou nao tem permissao: o usuario deve solicitar uma
+nova credencial ao responsavel pela UNICO.
+
 ## 3. Habilitar GitHub Pages
 
 1. No repositorio, abra **Settings > Pages**.

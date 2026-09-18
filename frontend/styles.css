@@ -286,6 +286,94 @@ textarea:focus-visible {
   margin: 0;
 }
 
+.credential-guide {
+  display: grid;
+  width: min(1120px, calc(100% - 40px));
+  grid-template-columns: minmax(280px, 0.8fr) minmax(420px, 1.2fr);
+  gap: 34px;
+  align-items: center;
+  margin: 20px auto;
+  padding: 30px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.credential-guide h2 {
+  margin: 0 0 16px;
+  font-size: 26px;
+}
+
+.credential-guide ol {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.credential-guide strong {
+  color: var(--ink);
+}
+
+.credential-steps {
+  display: grid;
+  gap: 14px;
+}
+
+.credential-steps figure {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin: 0;
+  padding: 10px;
+  background: #f8f9f8;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.credential-steps img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.credential-steps figcaption {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.credential-safety {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  margin-top: 20px;
+  padding: 13px;
+  color: #3c5c67;
+  background: var(--blue-soft);
+  border: 1px solid #b9dce7;
+  border-radius: 4px;
+}
+
+.credential-safety svg {
+  width: 20px;
+  height: 20px;
+}
+
+.credential-safety p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 .status-guide {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1012,6 +1100,14 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
+  .credential-guide {
+    grid-template-columns: 1fr;
+  }
+
+  .credential-steps figure {
+    grid-template-columns: 150px 1fr;
+  }
+
   .top-metrics {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1043,6 +1139,7 @@ select:focus {
 
   .docs-grid,
   .docs-detail,
+  .credential-guide,
   .unico-page {
     width: min(100% - 24px, 1120px);
   }
@@ -1059,6 +1156,10 @@ select:focus {
 
   .result-controls {
     gap: 8px;
+  }
+
+  .credential-steps figure {
+    grid-template-columns: 1fr;
   }
 
 }

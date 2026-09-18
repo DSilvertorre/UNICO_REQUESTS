@@ -9,7 +9,7 @@
       name="description"
       content="Portal interno para consulta de candidatos na UNICO People."
     >
-    <link rel="stylesheet" href="/styles.css?v=20260903-unico-only">
+    <link rel="stylesheet" href="/styles.css?v=20260918-credential-guide">
   </head>
   <body>
     <header class="site-header">
@@ -39,7 +39,7 @@
         <div class="docs-hero">
           <p>Ajuda operacional</p>
           <h1>Documentação</h1>
-          <span>Um guia direto para consultar candidatos no portal.</span>
+          <span>Um guia seguro, com passo a passo, para consultar candidatos no portal.</span>
         </div>
 
         <div class="docs-grid">
@@ -53,7 +53,7 @@
             <span class="doc-step">02</span>
             <i data-lucide="key-round"></i>
             <h2>Adicione a credencial</h2>
-            <p>Cole o token atual da sessão UNICO. Ele é usado somente durante a consulta e não é salvo no navegador.</p>
+            <p>Cole a credencial temporária no campo indicado. Ela é usada somente durante a consulta e não é salva pelo portal.</p>
           </article>
           <article>
             <span class="doc-step">03</span>
@@ -68,6 +68,38 @@
             <p>Filtre por tipo e status, selecione células ou copie toda a tabela para Excel e Google Sheets.</p>
           </article>
         </div>
+
+        <section class="credential-guide" aria-labelledby="credential-guide-title">
+          <div class="credential-guide-copy">
+            <p class="overline">Passo a passo</p>
+            <h2 id="credential-guide-title">Como localizar e inserir a credencial</h2>
+            <ol>
+              <li>Acesse o <strong>UNICO People</strong> com a sua conta corporativa.</li>
+              <li>Abra as ferramentas do navegador e selecione a aba <strong>Network</strong>.</li>
+              <li>Faça uma busca no UNICO People e selecione a requisição de busca, como <strong>people?account=...</strong>.</li>
+              <li>Em <strong>Headers</strong>, localize o cabeçalho <strong>Authorization</strong>. No portal, cole a credencial temporária no passo 2.</li>
+              <li>Depois da consulta, limpe o campo da credencial no portal.</li>
+            </ol>
+            <div class="credential-safety">
+              <i data-lucide="shield-check" aria-hidden="true"></i>
+              <p><strong>Cuide da credencial:</strong> faça esse processo apenas em ambiente corporativo autorizado. Não envie o valor por chat, e-mail ou planilha e não faça capturas de tela mostrando o token. Se ele expirar ou a consulta retornar 401/403, gere uma nova sessão ou procure o responsável pela UNICO.</p>
+            </div>
+          </div>
+          <div class="credential-steps" aria-label="Ilustrações dos passos para localizar a credencial">
+            <figure>
+              <img src="./assets/guia-credencial-1-acesso.png" alt="Passo 1: tela ilustrativa do UNICO People com acesso corporativo e sessão ativa.">
+              <figcaption>1. Acesse o UNICO People com sua conta corporativa.</figcaption>
+            </figure>
+            <figure>
+              <img src="./assets/guia-credencial-2-network.png" alt="Passo 2: tela ilustrativa destacando a aba Network nas ferramentas do navegador.">
+              <figcaption>2. Abra Network para acompanhar uma busca.</figcaption>
+            </figure>
+            <figure>
+              <img src="./assets/guia-credencial-3-headers.png" alt="Passo 3: tela ilustrativa destacando a requisição de busca, a aba Headers e o cabeçalho Authorization mascarado.">
+              <figcaption>3. Abra Headers na requisição de busca; a credencial é sensível.</figcaption>
+            </figure>
+          </div>
+        </section>
 
         <section class="docs-detail">
           <div>
