@@ -7,6 +7,7 @@ Portal interno para consultar candidatos exclusivamente na UNICO People.
 - `frontend/`: páginas da UNICO People e documentação operacional.
 - `backend/`: API FastAPI e integração com a UNICO.
 - `docs/`: instruções de publicação estática no Grid.
+- `render.yaml`: configuração de deploy do portal completo no Render.
 
 ## Execução local
 
@@ -27,6 +28,11 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 Nunca envie ao GitHub o arquivo `backend/.env`, tokens da UNICO, cookies,
 credenciais Google, chaves privadas ou logs. O `.gitignore` já bloqueia esses
 arquivos; consulte também `SECURITY.md`.
+
+## Deploy no Render
+
+Consulte [docs/RENDER.md](docs/RENDER.md). As variáveis da UNICO devem ser
+configuradas diretamente no painel do Render, nunca no repositório.
 
 ## Testes
 

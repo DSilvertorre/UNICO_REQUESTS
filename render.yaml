@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: unico-search-portal
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - backend/**
+        - frontend/**
+        - render.yaml
+    envVars:
+      - key: UNICO_ACCOUNT_ID
+        sync: false
+      - key: UNICO_TENANT
+        sync: false
+      - key: UNICO_COOKIE
+        sync: false
