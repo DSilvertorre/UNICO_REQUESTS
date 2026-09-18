@@ -45,7 +45,7 @@ async def disable_frontend_cache(request: Request, call_next):
     return response
 
 class UnicoSearchRequest(BaseModel):
-    tipo: str = Field(default="auto", pattern="^(auto|cpf|email|nome)$")
+    tipo: str = Field(default="cpf", pattern="^cpf$")
     entradas: list[str] = Field(default_factory=list, min_length=1, max_length=2000)
     credencial: str = ""
     dias: int = Field(default=5, ge=5, le=365)

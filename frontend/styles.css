@@ -87,19 +87,12 @@ textarea:focus-visible {
   text-decoration: none;
 }
 
-.brand-symbol {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-}
-
-.brand-symbol svg {
-  width: 29px;
-  height: 29px;
-  stroke-width: 1.8;
+.unico-logo {
+  color: var(--ink);
+  font-size: 29px;
+  font-weight: 900;
+  letter-spacing: -1.8px;
+  line-height: 1;
 }
 
 .brand strong,
@@ -396,6 +389,10 @@ textarea:focus-visible {
 
 .status-guide [data-status="Não iniciado"] {
   background: var(--red-soft);
+}
+
+.status-guide [data-status="Sem acesso recente"] {
+  background: #edf0ee;
 }
 
 .unico-page {

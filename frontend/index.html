@@ -14,11 +14,8 @@
   <body>
     <header class="site-header">
       <a class="brand" href="#/unico" aria-label="UNICO Search Portal">
-        <span class="brand-symbol" aria-hidden="true">
-          <i data-lucide="user-round-search"></i>
-        </span>
+        <span class="unico-logo" aria-hidden="true">UNICO</span>
         <span>
-          <strong>UNICO</strong>
           <small>SEARCH PORTAL</small>
         </span>
       </a>
@@ -46,8 +43,8 @@
           <article>
             <span class="doc-step">01</span>
                   <i data-lucide="clipboard-list"></i>
-            <h2>Informe os candidatos</h2>
-            <p>Cole até 2.000 CPFs, nomes ou e-mails. Use um valor por linha para facilitar a conferência.</p>
+            <h2>Informe os CPFs</h2>
+            <p>Cole até 2.000 CPFs, um por linha. As consultas na UNICO são feitas apenas por CPF.</p>
           </article>
           <article>
             <span class="doc-step">02</span>
@@ -80,7 +77,8 @@
               <li>Volte ao UNICO People e faça uma busca por candidato. Isso faz a requisição necessária aparecer no Network.</li>
               <li>Na lista de requisições, clique em <strong>people?account=...</strong>.</li>
               <li>Abra <strong>Headers</strong>. Em <strong>Request Headers</strong>, localize <strong>Authorization</strong> e copie o valor completo, incluindo <strong>Bearer</strong>.</li>
-              <li>Volte ao Search Portal, cole o valor no passo <strong>2. Adicione a credencial</strong> e faça a consulta.</li>
+              <li>Volte ao Search Portal e cole o valor no passo <strong>2. Adicione a credencial</strong>. O token pode durar até <strong>8 horas</strong>; se você sair da UNICO People, entre novamente para obter uma nova sessão.</li>
+              <li>Depois de inserir o token, cole o <strong>CPF</strong> que deseja procurar no passo 1 e clique em <strong>Consultar</strong>.</li>
               <li>Ao terminar, clique em <strong>Limpar</strong> no portal para remover a credencial da tela.</li>
             </ol>
             <div class="credential-safety">
@@ -107,6 +105,7 @@
             <span data-status="Mesa de análise"><strong>Mesa de análise</strong> Processo em análise ou assinatura.</span>
             <span data-status="Pendente"><strong>Pendente</strong> Existem documentos pendentes.</span>
             <span data-status="Não iniciado"><strong>Não iniciado</strong> O envio ainda não começou.</span>
+            <span data-status="Sem acesso recente"><strong>Sem acesso recente</strong> Não houve acesso dentro do período selecionado.</span>
           </div>
         </section>
       </section>
@@ -138,10 +137,10 @@
 
               <form id="unico-form">
                 <div class="form-step">
-                  <label for="search-input"><span>1</span> Informe os candidatos</label>
+                  <label for="search-input"><span>1</span> Informe os CPFs</label>
                   <textarea
                     id="search-input"
-                    placeholder="Cole CPFs, nomes ou e-mails, um por linha"
+                    placeholder="Cole os CPFs, um por linha"
                     spellcheck="false"
                     required
                   ></textarea>
@@ -257,10 +256,8 @@
                 <label>
                   Tipo
                   <select id="type-filter">
-                    <option value="all">Todos os tipos</option>
+                    <option value="all">CPF</option>
                     <option value="CPF">CPF</option>
-                    <option value="NOME">Nome</option>
-                    <option value="EMAIL">E-mail</option>
                   </select>
                 </label>
                 <label>

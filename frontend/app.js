@@ -95,8 +95,8 @@ function normalizeText(value) {
 
 function normalizeCpf(value) {
   const digits = String(value || "").replace(/\D/g, "");
-  if (!digits || digits.length < 9 || digits.length > 11) return "";
-  return digits.padStart(11, "0");
+  if (digits.length !== 11) return "";
+  return digits;
 }
 
 function detectEntry(entry) {
@@ -112,7 +112,7 @@ function detectEntry(entry) {
 
 function parseTerms(entries) {
   return entries
-    .map(detectEntry)
+    .map((entry) => ({ raw: entry, type: "cpf", key: normalizeCpf(entry) }))
     .filter((term) => term.key);
 }
 
@@ -469,7 +469,7 @@ async function searchUnicoBackend(entries, credentialValue, days) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      tipo: "auto",
+      tipo: "cpf",
       entradas: entries,
       credencial: credentialValue,
       dias: days,
@@ -753,12 +753,18 @@ async function submitSearch(event) {
 
   const entries = parseEntries(els.input.value);
   if (!entries.length) {
-    showMessage("Adicione ao menos um CPF, nome ou e-mail.");
+    showMessage("Adicione ao menos um CPF.");
     els.input.focus();
     return;
   }
   if (entries.length > 2000) {
     showMessage("A consulta aceita no máximo 2.000 entradas por execução.");
+    return;
+  }
+  const invalidCpfs = entries.filter((entry) => !normalizeCpf(entry));
+  if (invalidCpfs.length) {
+    showMessage("A consulta aceita somente CPFs válidos, com 11 dígitos.");
+    els.input.focus();
     return;
   }
   if (!els.credential.value.trim()) {
@@ -773,7 +779,7 @@ async function submitSearch(event) {
   try {
     const days = Number(els.periodRange.value);
     const credentialValue = els.credential.value.trim();
-    const payload = await searchUnicoBackend(entries, credentialValue, days);
+    const payload = await searchUnicoBackend(entries.map(normalizeCpf), credentialValue, days);
 
     state.columns = payload.colunas;
     state.rows = payload.resultados;
