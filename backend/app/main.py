@@ -153,4 +153,4 @@ def search_unico(payload: UnicoSearchRequest) -> dict:
         ],
         "resultados": results,
     }
-app.mount("/assets", StaticFiles(directory=FRONTEND_DIR), name="assets")
+app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
