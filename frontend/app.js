@@ -761,13 +761,8 @@ async function submitSearch(event) {
     showMessage("A consulta aceita no máximo 2.000 entradas por execução.");
     return;
   }
-  const invalidCpfs = entries.filter((entry) => !normalizeCpf(entry));
-  if (invalidCpfs.length) {
-    showMessage("A consulta aceita somente CPFs válidos, com 11 dígitos.");
-    els.input.focus();
-    return;
-  }
-  if (!els.credential.value.trim()) {
+  const validCpfs = entries.filter((entry) => normalizeCpf(entry));
+  if (validCpfs.length && !els.credential.value.trim()) {
     showMessage(
       "Para a requisição de busca, adicione a credencial. Caso tenha dúvida, abra a página de Documentação."
     );
@@ -779,7 +774,7 @@ async function submitSearch(event) {
   try {
     const days = Number(els.periodRange.value);
     const credentialValue = els.credential.value.trim();
-    const payload = await searchUnicoBackend(entries.map(normalizeCpf), credentialValue, days);
+    const payload = await searchUnicoBackend(entries, credentialValue, days);
 
     state.columns = payload.colunas;
     state.rows = payload.resultados;

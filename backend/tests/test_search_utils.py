@@ -6,6 +6,11 @@ def test_normalize_cpf_removes_punctuation_and_excel_decimal():
     assert normalize_cpf("12345678900.0") == "12345678900"
 
 
+def test_normalize_cpf_rejects_values_with_other_than_eleven_digits():
+    assert normalize_cpf("1234567890") == ""
+    assert normalize_cpf("123456789000") == ""
+
+
 def test_normalize_email_lowercases_and_trims():
     assert normalize_email("  Pessoa@Email.COM ") == "pessoa@email.com"
 

@@ -33,10 +33,10 @@ def normalize_cpf(value: object) -> str:
     text = re.sub(r"\.0+$", "", text)
     digits = re.sub(r"\D", "", text)
 
-    if not digits or len(digits) < 9 or len(digits) > 11:
+    if len(digits) != 11:
         return ""
 
-    return digits.zfill(11)
+    return digits
 
 
 def detect_search_type(raw: str) -> str:

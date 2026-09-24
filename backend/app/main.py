@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
-from .search_utils import parse_search_terms
+from .search_utils import normalize_cpf, parse_search_terms
 from .unico_service import (
     UnicoConfigurationError,
     UnicoCredentialError,
@@ -119,26 +119,52 @@ def unico_config() -> dict:
 
 @app.post("/unico/search")
 def search_unico(payload: UnicoSearchRequest) -> dict:
-    terms = parse_search_terms(payload.entradas, payload.tipo)
-    if not terms:
-        raise HTTPException(status_code=400, detail="Nenhuma entrada válida para consulta.")
+    entries = [str(entry).strip() for entry in payload.entradas if str(entry).strip()]
+    if not entries:
+        raise HTTPException(status_code=400, detail="Informe ao menos um CPF para consulta.")
 
-    try:
-        results = unico_search.search(terms, payload.credencial, payload.dias)
-    except UnicoCredentialError as exc:
-        raise HTTPException(status_code=401, detail=str(exc)) from exc
-    except UnicoConfigurationError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
-    except UnicoRateLimitError as exc:
-        raise HTTPException(status_code=429, detail=str(exc)) from exc
-    except UnicoRequestError as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    terms = parse_search_terms(entries, payload.tipo)
 
-    found = sum(1 for row in results if row["Resultado"] == "Encontrado")
+    results: list[dict] = []
+    if terms:
+        try:
+            results = unico_search.search(terms, payload.credencial, payload.dias)
+        except UnicoCredentialError as exc:
+            raise HTTPException(status_code=401, detail=str(exc)) from exc
+        except UnicoConfigurationError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+        except UnicoRateLimitError as exc:
+            raise HTTPException(status_code=429, detail=str(exc)) from exc
+        except UnicoRequestError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    valid_results = iter(results)
+    merged_results: list[dict] = []
+    for entry in entries:
+        if normalize_cpf(entry):
+            merged_results.append(next(valid_results))
+            continue
+
+        merged_results.append(
+            {
+                "Consulta": entry,
+                "Tipo": "CPF",
+                "Resultado": "Não encontrado",
+                "Nome": "",
+                "CPF": "".join(char for char in entry if char.isdigit()),
+                "Email": "",
+                "Status": "CPF incorreto",
+                "Pendências": "",
+                "Data limite": "",
+                "Nº de ocorrências": 0,
+            }
+        )
+
+    found = sum(1 for row in merged_results if row["Resultado"] == "Encontrado")
     return {
-        "total_consultado": len(terms),
+        "total_consultado": len(entries),
         "total_encontrado": found,
-        "total_ocorrencias": sum(int(row["Nº de ocorrências"]) for row in results),
+        "total_ocorrencias": sum(int(row["Nº de ocorrências"]) for row in merged_results),
         "colunas": [
             "Consulta",
             "Tipo",
@@ -151,6 +177,6 @@ def search_unico(payload: UnicoSearchRequest) -> dict:
             "Data limite",
             "Nº de ocorrências",
         ],
-        "resultados": results,
+        "resultados": merged_results,
     }
 app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
