@@ -346,6 +346,20 @@ function formatDate(value) {
   return date ? date.toLocaleDateString("pt-BR") : "";
 }
 
+function formatBirthDate(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})(?:$|T)/.exec(String(value || ""));
+  if (!match) return "";
+  const [, year, month, day] = match;
+  const parsed = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  if (
+    Number(year) <= 1900 ||
+    parsed.getUTCFullYear() !== Number(year) ||
+    parsed.getUTCMonth() + 1 !== Number(month) ||
+    parsed.getUTCDate() !== Number(day)
+  ) return "";
+  return `${day}/${month}/${year}`;
+}
+
 function referenceDate(admission) {
   return parseDate(admission?.limitDate);
 }
@@ -456,6 +470,7 @@ function unicoColumns() {
     "Resultado",
     "Nome",
     "CPF",
+    "Data de nascimento",
     "Email",
     "Status",
     "Pendências",
@@ -542,6 +557,7 @@ async function searchUnicoDirect(entries, credential, days) {
         Resultado: "Não encontrado",
         Nome: "",
         CPF: term.type === "cpf" ? term.key : "",
+        "Data de nascimento": "",
         Email: term.type === "email" ? term.key : "",
         Status: "",
         Pendências: "",
@@ -564,6 +580,9 @@ async function searchUnicoDirect(entries, credential, days) {
         Resultado: "Encontrado",
         Nome: candidate.name || "",
         CPF: identifier.value || (term.type === "cpf" ? term.key : ""),
+        "Data de nascimento": formatBirthDate(
+          candidate.birthDate || candidate.birthdate || candidate.dateOfBirth || candidate.dataNascimento
+        ),
         Email: candidate.email || "",
         Status: status,
         Pendências: pendencies(status, admission),

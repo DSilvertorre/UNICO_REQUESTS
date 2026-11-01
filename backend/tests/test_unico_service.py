@@ -171,3 +171,21 @@ def test_old_candidate_is_reported_without_recent_access(monkeypatch):
     )
 
     assert rows[0]["Status"] == "Sem acesso recente"
+
+
+@pytest.mark.parametrize("field", ["birthDate", "birthdate", "dateOfBirth", "dataNascimento"])
+def test_search_includes_candidate_birth_date(monkeypatch, field):
+    service = configured_service(monkeypatch)
+    admission = {
+        "candidate": {"name": "Pessoa Teste", field: "1992-06-15"},
+        "status": {"overview": {"code": "completed"}},
+    }
+    monkeypatch.setattr(service, "_request", lambda session, term, credential: ([admission], 1))
+
+    rows = service.search(
+        [SearchTerm(raw="12345678900", type="cpf", key="12345678900")],
+        credential="token",
+        days=5,
+    )
+
+    assert rows[0]["Data de nascimento"] == "15/06/1992"

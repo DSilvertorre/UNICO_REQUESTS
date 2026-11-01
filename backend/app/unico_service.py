@@ -332,6 +332,7 @@ class UnicoSearchService:
                         "Resultado": "Não encontrado",
                         "Nome": "",
                         "CPF": term.key if term.type == "cpf" else "",
+                        "Data de nascimento": "",
                         "Email": term.key if term.type == "email" else "",
                         "Status": "",
                         "Pendências": "",
@@ -358,6 +359,12 @@ class UnicoSearchService:
                         "Resultado": "Encontrado",
                         "Nome": candidate.get("name", "") or "",
                         "CPF": cpf or (term.key if term.type == "cpf" else ""),
+                        "Data de nascimento": _format_date(
+                            candidate.get("birthDate")
+                            or candidate.get("birthdate")
+                            or candidate.get("dateOfBirth")
+                            or candidate.get("dataNascimento")
+                        ),
                         "Email": candidate.get("email", "") or "",
                         "Status": status,
                         "Pendências": _pendencies(status, admission or {}),
