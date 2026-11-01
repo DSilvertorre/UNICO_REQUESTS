@@ -280,3 +280,33 @@ def test_search_fetches_birth_date_from_position(monkeypatch):
         days=5,
     )
     assert rows[0]["Data de nascimento"] == "15/06/1992"
+
+
+@pytest.mark.parametrize(
+    ("status_code", "error_type"),
+    [(401, UnicoCredentialError), (403, UnicoRequestError)],
+)
+def test_position_access_error_shows_unico_status(monkeypatch, status_code, error_type):
+    service = configured_service(monkeypatch)
+    monkeypatch.setattr("app.unico_service.time.sleep", lambda seconds: None)
+
+    class PositionSession:
+        def get(self, *args, **kwargs):
+            class Response:
+                pass
+
+            response = Response()
+            response.status_code = status_code
+            return response
+
+    admission = {"position": "position-test", "unit": {"uid": "unit-test"}}
+    with pytest.raises(error_type, match=f"HTTP {status_code}"):
+        service._position_birth_date(PositionSession(), admission, "token")
+
+
+def test_missing_unit_is_reported_before_position_request(monkeypatch):
+    service = configured_service(monkeypatch)
+    admission = {"position": "position-test"}
+
+    with pytest.raises(UnicoRequestError, match="identificador da unidade"):
+        service._position_birth_date(FailingSession(), admission, "token")
