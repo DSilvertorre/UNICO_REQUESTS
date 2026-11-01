@@ -327,8 +327,11 @@ class UnicoSearchService:
         if existing:
             return existing
         params = _position_params(admission)
-        if "uid" not in params:
-            return None
+        if "uid" not in params or "unit" not in params:
+            missing = "posição" if "uid" not in params else "unidade"
+            raise UnicoRequestError(
+                f"A busca não retornou o identificador da {missing} necessário para consultar a data de nascimento."
+            )
 
         time.sleep(REQUEST_DELAY)
         try:
@@ -343,8 +346,14 @@ class UnicoSearchService:
         except requests.RequestException as exc:
             raise UnicoRequestError("Não foi possível consultar os dados da posição na UNICO.") from exc
 
-        if response.status_code in {401, 403}:
-            raise UnicoCredentialError("A credencial não permite consultar os dados da posição.")
+        if response.status_code == 401:
+            raise UnicoCredentialError(
+                "A UNICO retornou HTTP 401 ao consultar a posição com o mesmo token usado na busca."
+            )
+        if response.status_code == 403:
+            raise UnicoRequestError(
+                "A UNICO retornou HTTP 403 ao consultar a posição. A resposta não informa a causa da recusa."
+            )
         if response.status_code == 429:
             raise UnicoRateLimitError("A UNICO atingiu o limite de requisições.")
         if response.status_code != 200:
