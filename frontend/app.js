@@ -384,7 +384,10 @@ async function positionBirthDate(admission, credential) {
   const existing = candidateBirthDate(admission);
   if (existing) return existing;
   const params = positionParams(admission);
-  if (!params.uid) return "";
+  if (!params.uid || !params.unit) {
+    const missing = !params.uid ? "posição" : "unidade";
+    throw new Error(`A busca não retornou o identificador da ${missing} necessário para consultar a data de nascimento.`);
+  }
 
   const url = new URL("https://admin.acessorh.com.br/svc2/position");
   url.searchParams.set("uid", params.uid);
@@ -397,8 +400,11 @@ async function positionBirthDate(admission, credential) {
       accept: "application/json",
     },
   });
-  if (response.status === 401 || response.status === 403) {
-    throw new Error("A credencial não permite consultar os dados da posição.");
+  if (response.status === 401) {
+    throw new Error("A UNICO retornou HTTP 401 ao consultar a posição com o mesmo token usado na busca.");
+  }
+  if (response.status === 403) {
+    throw new Error("A UNICO retornou HTTP 403 ao consultar a posição. A resposta não informa a causa da recusa.");
   }
   if (!response.ok) {
     throw new Error(`A UNICO respondeu com HTTP ${response.status} ao consultar a posição.`);
