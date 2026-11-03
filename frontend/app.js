@@ -360,59 +360,6 @@ function formatBirthDate(value) {
   return `${day}/${month}/${year}`;
 }
 
-function candidateBirthDate(admission) {
-  const candidatePerson = (admission?.persons || []).find(
-    (person) => person?.personType === "candidate"
-  );
-  return candidatePerson?.personData?.dataNascimento
-    || admission?.candidate?.birthDate
-    || admission?.candidate?.birthdate
-    || admission?.candidate?.dateOfBirth
-    || admission?.candidate?.dataNascimento;
-}
-
-function positionParams(admission) {
-  const position = admission?.position;
-  const unit = admission?.unit;
-  const uid = (typeof position === "object" ? position?.uid || position?.id : position)
-    || admission?.uid;
-  const unitUid = typeof unit === "object" ? unit?.uid || unit?.id : unit;
-  return { uid, unit: unitUid };
-}
-
-async function positionBirthDate(admission, credential) {
-  const existing = candidateBirthDate(admission);
-  if (existing) return existing;
-  const params = positionParams(admission);
-  if (!params.uid || !params.unit) {
-    const missing = !params.uid ? "posição" : "unidade";
-    throw new Error(`A busca não retornou o identificador da ${missing} necessário para consultar a data de nascimento.`);
-  }
-
-  const url = new URL("https://admin.acessorh.com.br/svc2/position");
-  url.searchParams.set("uid", params.uid);
-  if (params.unit) url.searchParams.set("unit", params.unit);
-  await new Promise((resolve) => window.setTimeout(resolve, 70));
-  const response = await fetch(url.toString(), {
-    headers: {
-      authorization: authorizationValue(credential),
-      tenant: UNICO_DIRECT.tenant,
-      accept: "application/json",
-    },
-  });
-  if (response.status === 401) {
-    throw new Error("A UNICO retornou HTTP 401 ao consultar a posição com o mesmo token usado na busca.");
-  }
-  if (response.status === 403) {
-    throw new Error("A UNICO retornou HTTP 403 ao consultar a posição. A resposta não informa a causa da recusa.");
-  }
-  if (!response.ok) {
-    throw new Error(`A UNICO respondeu com HTTP ${response.status} ao consultar a posição.`);
-  }
-  const payload = await response.json();
-  return candidateBirthDate(payload?.result);
-}
-
 function referenceDate(admission) {
   return parseDate(admission?.limitDate);
 }
@@ -599,11 +546,9 @@ async function searchUnicoDirect(entries, credential, days) {
     }
 
     const payload = await response.json();
-    const result = payload?.result || {};
-    const admissionsPayload = result.admissions || {};
-    const isPosition = Boolean(result.position && result.persons);
-    const admissions = isPosition ? [result] : (admissionsPayload.results || []);
-    const total = isPosition ? 1 : Number(admissionsPayload.total || 0);
+    const admissionsPayload = payload?.result?.admissions || {};
+    const admissions = admissionsPayload.results || [];
+    const total = Number(admissionsPayload.total || 0);
 
     if (!admissions.length) {
       rows.push({
@@ -635,7 +580,9 @@ async function searchUnicoDirect(entries, credential, days) {
         Resultado: "Encontrado",
         Nome: candidate.name || "",
         CPF: identifier.value || (term.type === "cpf" ? term.key : ""),
-        "Data de nascimento": formatBirthDate(await positionBirthDate(admission, credential)),
+        "Data de nascimento": formatBirthDate(
+          candidate.birthDate || candidate.birthdate || candidate.dateOfBirth || candidate.dataNascimento
+        ),
         Email: candidate.email || "",
         Status: status,
         Pendências: pendencies(status, admission),
