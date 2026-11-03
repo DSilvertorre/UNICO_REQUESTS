@@ -12,7 +12,6 @@ from .search_utils import SearchTerm
 
 
 UNICO_URL = "https://admin.acessorh.com.br/svc2/search/people"
-UNICO_POSITION_URL = "https://admin.acessorh.com.br/svc2/position"
 REQUESTS_PER_SECOND = 15
 REQUEST_DELAY = 1 / REQUESTS_PER_SECOND
 
@@ -80,37 +79,6 @@ def _format_date(value: Any) -> str:
     if not parsed or parsed.year <= 1900:
         return ""
     return parsed.strftime("%d/%m/%Y")
-
-
-def _candidate_birth_date(admission: dict) -> Any:
-    for person in admission.get("persons", []) or []:
-        if isinstance(person, dict) and person.get("personType") == "candidate":
-            person_data = person.get("personData") or {}
-            if isinstance(person_data, dict) and person_data.get("dataNascimento"):
-                return person_data["dataNascimento"]
-
-    candidate = admission.get("candidate") or {}
-    return (
-        candidate.get("birthDate")
-        or candidate.get("birthdate")
-        or candidate.get("dateOfBirth")
-        or candidate.get("dataNascimento")
-    )
-
-
-def _position_params(admission: dict) -> dict[str, str]:
-    position = admission.get("position") or admission.get("uid")
-    unit = admission.get("unit") or {}
-    if isinstance(position, dict):
-        position = position.get("uid") or position.get("id")
-    if isinstance(unit, dict):
-        unit = unit.get("uid") or unit.get("id")
-    params = {}
-    if position:
-        params["uid"] = str(position)
-    if unit:
-        params["unit"] = str(unit)
-    return params
 
 
 def _reference_date(admission: dict) -> datetime | None:
@@ -316,55 +284,8 @@ class UnicoSearchService:
         except ValueError as exc:
             raise UnicoRequestError("A UNICO retornou uma resposta inválida.") from exc
 
-        result = payload.get("result") or {}
-        if isinstance(result, dict) and result.get("position") and result.get("persons"):
-            return [result], 1
-        admissions = result.get("admissions", {})
+        admissions = payload.get("result", {}).get("admissions", {})
         return admissions.get("results", []) or [], int(admissions.get("total", 0) or 0)
-
-    def _position_birth_date(self, session: requests.Session, admission: dict, credential: str) -> Any:
-        existing = _candidate_birth_date(admission)
-        if existing:
-            return existing
-        params = _position_params(admission)
-        if "uid" not in params or "unit" not in params:
-            missing = "posição" if "uid" not in params else "unidade"
-            raise UnicoRequestError(
-                f"A busca não retornou o identificador da {missing} necessário para consultar a data de nascimento."
-            )
-
-        time.sleep(REQUEST_DELAY)
-        try:
-            response = session.get(
-                UNICO_POSITION_URL,
-                params=params,
-                headers=self._headers(credential),
-                timeout=25,
-            )
-        except requests.Timeout as exc:
-            raise UnicoRequestError("A UNICO demorou para retornar os dados da posição.") from exc
-        except requests.RequestException as exc:
-            raise UnicoRequestError("Não foi possível consultar os dados da posição na UNICO.") from exc
-
-        if response.status_code == 401:
-            raise UnicoCredentialError(
-                "A UNICO retornou HTTP 401 ao consultar a posição com o mesmo token usado na busca."
-            )
-        if response.status_code == 403:
-            raise UnicoRequestError(
-                "A UNICO retornou HTTP 403 ao consultar a posição. A resposta não informa a causa da recusa."
-            )
-        if response.status_code == 429:
-            raise UnicoRateLimitError("A UNICO atingiu o limite de requisições.")
-        if response.status_code != 200:
-            raise UnicoRequestError(
-                f"A UNICO respondeu com HTTP {response.status_code} ao consultar a posição."
-            )
-        try:
-            result = response.json().get("result") or {}
-        except ValueError as exc:
-            raise UnicoRequestError("A UNICO retornou dados inválidos para a posição.") from exc
-        return _candidate_birth_date(result)
 
     def search(
         self,
@@ -439,7 +360,10 @@ class UnicoSearchService:
                         "Nome": candidate.get("name", "") or "",
                         "CPF": cpf or (term.key if term.type == "cpf" else ""),
                         "Data de nascimento": _format_date(
-                            self._position_birth_date(session, admission or {}, credential)
+                            candidate.get("birthDate")
+                            or candidate.get("birthdate")
+                            or candidate.get("dateOfBirth")
+                            or candidate.get("dataNascimento")
                         ),
                         "Email": candidate.get("email", "") or "",
                         "Status": status,
